@@ -8,7 +8,7 @@ import static db.Utils.*;
 
 /** An Object that takes inputs from a given scanner and interprets the demands. */
 
-public class CommandTransaction {
+public class CommandParse {
 
     /** Text of regular expressions. */
     private static final String REST = "\\s*(.*)\\s*",
@@ -74,6 +74,14 @@ public class CommandTransaction {
        }
     }
 
+    private static List<ConditionParse> strToCondParse(String[] conditionStrs) {
+        List<ConditionParse> condParse = new ArrayList<>();
+        for (String str : conditionStrs) {
+            condParse.add(new ConditionParse(str));
+        }
+        return condParse;
+    }
+
     private static String createTable(String expr) {
         Matcher matcher;
         if ((matcher = CREATE_NEW.matcher(expr)).matches()) {
@@ -82,13 +90,11 @@ public class CommandTransaction {
             String name = matcher.group(1);
             String[] columnNames = matcher.group(2).split(COMMA);
             String[] tableNames = matcher.group(3).split(COMMA);
-            String[] conditionStrs;
-            if (matcher.group(4) == null) {
-                conditionStrs = null;
-            } else {
-                conditionStrs = matcher.group(4).split(AND);
+            List<ConditionParse> condParse = null;
+            if (matcher.group(4) != null) {
+                condParse = strToCondParse(matcher.group(4).split(AND));
             }
-            return createSelectedTable(name, columnNames, tableNames, conditionStrs);
+            return createSelectedTable(name, columnNames, tableNames, condParse);
         } else {
             throw error("Malformed create: %s", expr);
         }
@@ -104,10 +110,9 @@ public class CommandTransaction {
         return res;
     }
 
-    private static String createSelectedTable(String name, String[] columnNames, String[] tableNames, String[] conditionStrs) {
-        Table newTable;
+    private static String createSelectedTable(String name, String[] columnNames, String[] tableNames, List<ConditionParse> conditionParses) {
         try {
-            newTable = Database.select(name, columnNames, tableNames, conditionStrs);
+            Table res = Database.select(name, columnNames, tableNames, conditionParses);
             return "";
         } catch (Exception e) {
             return "" + e;
@@ -140,41 +145,23 @@ public class CommandTransaction {
     }
 
     private static String select(String expr) {
-        /**Matcher matcher = SELECT_CLS.matcher(expr);
-        if (matcher.matches()) {
-            String[] columns = matcher.group(2).split(COMMA);
-            String[] tableNames = matcher.group(3).split(COMMA);
-            String[] conditionStrs;
-            if (matcher.group(4) == null) {
-                conditionStrs = null;
-            } else {
-                conditionStrs = matcher.group(4).split(AND);
-            }
-            Matcher m;
-            List<String> normalColNames = new ArrayList<>();
-            List<String> OpColNames = new ArrayList<>();
-            List<String> OpColAlias = new ArrayList<>();
-            List<String> operators = new ArrayList<>();
-            for (String columnName : columns) {
-                if ((m = OPERATOR_AS.matcher(columnName)).matches()) {
-                    String column1 = m.group(1);
-                    String operator = m.group(2);
-                    String column2 = m.group(3);
-                    String colAlias = m.group(4);
-                    OpColNames.add(column1);
-                    OpColNames.add(column2);
-                    OpColAlias.add(colAlias);
-                    operators.add(operator);
-                    normalColNames.add(column1);
-                    normalColNames.add(column2);
-                    ;
-                } else {
-                    normalColNames.add(columnName);
-                }
-            }
-        }*/
-        return null;
+        Matcher matcher = SELECT_CLS.matcher(expr);
+        if (!matcher.matches()) {
+            throw error("Malformed select: %s", expr);
+        }
+
+        String[] columns = matcher.group(2).split(COMMA);
+        String[] tableNames = matcher.group(3).split(COMMA);
+        List<ConditionParse> condParse = null;
+        if (matcher.group(4) != null) {
+            condParse = strToCondParse(matcher.group(4).split(AND));
+        }
+
+        try {
+            Table res = Database.select(null, columns, tableNames,condParse);
+            return res.toString();
+        } catch (Exception e) {
+            return "" + e;
+        }
     }
-
-
 }

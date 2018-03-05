@@ -57,7 +57,7 @@ class Operation {
 
         int col2Index = table.findColIndex(opString.colOrLiteral);
         if (col2Index == -1) {
-            this.literal = new Value(CommandTransaction.stringToValue(opString.colOrLiteral));
+            this.literal = new Value(CommandParse.stringToValue(opString.colOrLiteral));
             if ((this.col1.getColType().equals("string") && !this.literal.getValueType().equals("string")) ||
                     (!this.col1.getColType().equals("string") && this.literal.getValueType().equals("string"))) {
                 throw error("Cannot perform operations where one operand is a string and the other is int or float types.");

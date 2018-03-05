@@ -1,7 +1,5 @@
 package db;
 
-import edu.princeton.cs.introcs.In;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -395,7 +393,7 @@ class Table implements Iterable<Row> {
             Operation op;
             String newCol;
             if (col2Index == -1) {
-                Value val = new Value(CommandTransaction.stringToValue(colOp.colOrLiteral));
+                Value val = new Value(CommandParse.stringToValue(colOp.colOrLiteral));
                 if (col1.getColType().equals("float") || val.getValueType().equals("float")) {
                     newCol = colOp.newCol + " float";
                 } else {
@@ -416,7 +414,7 @@ class Table implements Iterable<Row> {
         return operationList;
     } */
 
-    List<Condition> conditionParse(List<ConditionParse> conditions) {
+    List<Condition> condParseToConds(List<ConditionParse> conditions) {
         List<Condition> conditionList = new ArrayList<>();
         if (conditions == null || conditions.isEmpty()) {
             return null;
@@ -426,7 +424,7 @@ class Table implements Iterable<Row> {
             int col2Index = findColIndex(c.colOrLiteral);
             Condition condition;
             if (col2Index == -1) {
-                Value val = new Value(CommandTransaction.stringToValue(c.colOrLiteral));
+                Value val = new Value(CommandParse.stringToValue(c.colOrLiteral));
                 condition = new Condition(col1, c.comparison, val);
             } else {
                 Column col2 = this.columns[col2Index];
@@ -443,7 +441,7 @@ class Table implements Iterable<Row> {
     Table select(String[] columnNames, List<ConditionParse> conditions) {
         List<Column> allCols = getAllColumns(columnNames, this);
 
-        List<Condition> conditionList = this.conditionParse(conditions);
+        List<Condition> conditionList = this.condParseToConds(conditions);
         Table res = new Table(allCols);
         for (Row row : this.rows) {
             if ( conditions == null || conditions.isEmpty() || Condition.test(conditionList, row)) {
@@ -482,12 +480,12 @@ class Table implements Iterable<Row> {
     /** returns a list of columns with the same column names in String[] columnNames, from this table and table2. */
     List<Column> getAllColumns(String[] columnNames, Table... tables) {
         List<Column> allCols = new ArrayList<>();
-        for (int i = 0; i < columnNames.length; i++) {
+        for (String columnName : columnNames) {
             String type = null;
-            for (int j = 0; j < tables.length; j++) {
-                for (String col : tables[j].columnNames) {
-                    if (columnNames[i].equals(col)) {
-                        type = tables[j].columnTypes[tables[j].findColIndex(col)];
+            for (Table table : tables) {
+                for (String col : table.columnNames) {
+                    if (columnName.equals(col)) {
+                        type = table.columnTypes[table.findColIndex(col)];
                         break;
                     }
                 }
@@ -495,7 +493,7 @@ class Table implements Iterable<Row> {
                     break;
                 }
             }
-            Column newCol = new Column(columnNames[i], type, tables);
+            Column newCol = new Column(columnName, type, tables);
             allCols.add(newCol);
         }
         return allCols;
@@ -504,9 +502,7 @@ class Table implements Iterable<Row> {
     /** returns a list of column names except the common ones, from this table and table2. */
     String[] allColumnNames(Table table2) {
         List<String> newColumns = new ArrayList<>();
-        for (String col1: this.columnNames) {
-            newColumns.add(col1);
-        }
+        Collections.addAll(newColumns, this.columnNames);
         for (String col2 : table2.columnNames) {
             if (!newColumns.contains(col2)) {
                 newColumns.add(col2);
@@ -560,8 +556,7 @@ class Table implements Iterable<Row> {
             }
         } */
         Table combine = this.joinTable(table2);
-        Table res = combine.select(columnNames, conditions);
-        return res;
+        return combine.select(columnNames, conditions);
     }
 
     public Table joinTable(Table t2) {

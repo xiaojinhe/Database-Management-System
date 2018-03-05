@@ -38,7 +38,7 @@ public class Database {
     }
 
     public String transact(String query) {
-        String result = CommandTransaction.eval(query);
+        String result = CommandParse.eval(query);
         return result;
     }
 
@@ -84,7 +84,7 @@ public class Database {
         String[] rowItemStr = rowLine.split(",");
         Value[] rowData = new Value[rowItemStr.length];
         for (int i = 0; i < rowData.length; i++) {
-            rowData[i] = new Value(CommandTransaction.stringToValue(rowItemStr[i]));
+            rowData[i] = new Value(CommandParse.stringToValue(rowItemStr[i]));
         }
         Row row = new Row(rowData);
         return row;
@@ -113,9 +113,8 @@ public class Database {
     }
 
 
-   static Table select(String name, String[] columnNames, /*String[] columnWithAlias, String[] opColNames, String[] opColAlias,*/
-                        String[] tableNames, String[] conditionStrs) {
-       /** List<Table> tableList = new ArrayList<>();
+   static Table select(String name, String[] columns, String[] tableNames, List<ConditionParse> condParse) {
+       List<Table> tableList = new ArrayList<>();
         for (String t : tableNames) {
             if (tables.containsKey(t)) {
                 tableList.add(tables.get(t));
