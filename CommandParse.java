@@ -33,14 +33,14 @@ public class CommandParse {
                                  SELECT_AMD = Pattern.compile("select " + REST);
 
     /** Stage 2 syntax, contains clauses of commands. */
-    private static final Pattern CREATE_NEW = Pattern.compile("(\\S+)\\s+\\(\\s*(\\S+\\s+\\s*" +
+    private static final Pattern CREATE_NEW = Pattern.compile("(\\S+)\\s+\\(\\s*(\\S+\\s+\\S+\\s*" +
             "(?:,\\s*\\S+\\s+\\S+\\s*)*)\\)"),
             SELECT_CLS = Pattern.compile("([^,]+?(?:,[^,]+?)*)\\s+from\\s+" +
                     "(\\S+\\s*(?:,\\s*\\S+\\s*)*)(?:\\s+where\\s+" +
                     "([\\w\\s+\\-*/'<>=!.]+?(?:\\s+and\\s+" +
                     "[\\w\\s+\\-*/'<>=!.]+?)*))?"),
             CREATE_SEL = Pattern.compile("(\\S+)\\s+as select\\s+" + SELECT_CLS.pattern()),
-            INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?" + "\\s*(?:,\\s*.+?\\s*)*)");
+            INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?\\s*(?:,\\s*.+?\\s*)*)");
 
     static String eval(String query) {
         Matcher matcher;
@@ -59,7 +59,7 @@ public class CommandParse {
         } else if ((matcher = SELECT_AMD.matcher(query)).matches()) {
             return select(matcher.group(1));
         } else {
-            throw error ("Malformed query: %s", query);
+            throw error ("ERROR: Malformed query: %s", query);
         }
     }
 
@@ -81,6 +81,8 @@ public class CommandParse {
         }
         return condParse;
     }
+
+
 
     private static String createTable(String expr) {
         Matcher matcher;
@@ -150,11 +152,11 @@ public class CommandParse {
             throw error("Malformed select: %s", expr);
         }
 
-        String[] columns = matcher.group(2).split(COMMA);
-        String[] tableNames = matcher.group(3).split(COMMA);
+        String[] columns = matcher.group(1).split(COMMA);
+        String[] tableNames = matcher.group(2).split(COMMA);
         List<ConditionParse> condParse = null;
-        if (matcher.group(4) != null) {
-            condParse = strToCondParse(matcher.group(4).split(AND));
+        if (matcher.group(3) != null) {
+            condParse = strToCondParse(matcher.group(3).split(AND));
         }
 
         try {

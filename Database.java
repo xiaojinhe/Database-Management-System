@@ -1,8 +1,6 @@
 package db;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static db.Utils.*;
 
@@ -33,13 +31,21 @@ public class Database {
     public Table get(String tableName) {
         if (tables.containsKey(tableName)) {
             return tables.get(tableName);
+        } else {
+            throw error("There is no table with the name: %s in the database.", tableName);
         }
-        return null;
     }
 
     public String transact(String query) {
-        String result = CommandParse.eval(query);
-        return result;
+        return CommandParse.eval(query);
+    }
+
+    public int size() {
+        return tables.size();
+    }
+
+    public Set<String> getTableNames() {
+        return tables.keySet();
     }
 
     static Table createNewTable(String name, String[] colNamesWithTypes) {
@@ -47,9 +53,6 @@ public class Database {
             throw error("Cannot create a table with no columns.");
         }
 
-        for (String colName : colNamesWithTypes) {
-
-        }
         Table table = new Table(colNamesWithTypes);
         tables.put(name, table);
         return table;
@@ -86,8 +89,7 @@ public class Database {
         for (int i = 0; i < rowData.length; i++) {
             rowData[i] = new Value(CommandParse.stringToValue(rowItemStr[i]));
         }
-        Row row = new Row(rowData);
-        return row;
+        return new Row(rowData);
     }
 
     static String insertRow(String name, String rowLine) {
@@ -113,67 +115,55 @@ public class Database {
     }
 
 
-   static Table select(String name, String[] columns, String[] tableNames, List<ConditionParse> condParse) {
-       List<Table> tableList = new ArrayList<>();
+    static Table select(String name, String[] columns, String[] tableNames, List<ConditionParse> condParse) {
+        List<Table> tableList = new ArrayList<>();
         for (String t : tableNames) {
             if (tables.containsKey(t)) {
                 tableList.add(tables.get(t));
             } else {
-                throw error("ERROR: Table %s does not exist in db", t);
+                throw error("ERROR: Table %s does not exist in database", t);
             }
         }
-        Table table1;
-        if (tableList.size() >= 1) {
-            table1 = tableList.remove(0);
-        } else {
+
+        if (tableList.size() == 0) {
             throw error("ERROR: No valid table selected.");
         }
 
-        for (Table t : tableList) {
-            List<String> colNamesForTwo = new ArrayList<>();
-            List<String> colAliasForTwo = new ArrayList<>();
-            List<String> opColNamesForTwo = new ArrayList<>();
-            List<String> opColAliasForTwo = new ArrayList<>();
+        Table tableAll = tableList.remove(0); //get the first table in the tableLis
 
-            for (String columnName : columnNames) {
-                for (String table1ColName : table1.columnNames) {
-                    if (columnName.equals(table1ColName)) {
-                        colNamesForTwo.add(columnName);
-                    }
-                }
-                for (String tColName : t.columnNames) {
-                    if (columnName.equals(tColName)) {
-                        colNamesForTwo.add(columnName);
-                    }
+        if (tableList.size() != 0) {
+            for (Table t : tableList) {
+                tableAll = tableAll.joinTable(t); //join all the tables in the tableList
+            }
+        }
+
+        if (tableAll.rowNum() == 0 ) {
+            throw error("There is no any matched item in common columns.");
+        }
+
+        List<String> tableAllColNames = new ArrayList<>(Arrays.asList(tableAll.columnNames));
+        List<OperationParse> opParses = null;
+
+        if (columns[0].equals("*")) {
+            columns = tableAllColNames.toArray(new String[tableAllColNames.size()]);
+        } else {
+            for (int i = 0; i < columns.length; i++) {
+                if (!tableAllColNames.contains(columns[i])) {
+                    OperationParse op = new OperationParse(columns[i]);
+                    opParses = new ArrayList<>();
+                    opParses.add(op);
+                    columns[i] = op.newCol;
                 }
             }
+        }
 
-            for (int i = 0; i < opColAlias.length; i++) {
-                int j = i * 2;
-                for (String colForTwo : colNamesForTwo) {
-                    if (opColNames[j].equals(colForTwo)) {
+        Table res = tableAll.selectOp(columns, opParses);
+        res = res.select(res.columnNames, condParse);
 
-                    }
-                }
-            }
-
-            for (String col : columnWithAlias) {
-                for (String table1ColName : table1.columnNames) {
-                    if (columnName.equals(table1ColName)) {
-                        colNamesForTwo.add(columnName);
-                    }
-                }
-                for (String tColName : t.columnNames) {
-                    if (columnName.equals(tColName)) {
-                        colNamesForTwo.add(columnName);
-                    }
-                }
-            }
-            table1 = table1.selectOp(t, colNamesForTwo.toArray(), )
-
-        }*/
-        return null;
-
+        if (name != null) {
+            tables.put(name, res);
+        }
+        return res;
     }
 
 }

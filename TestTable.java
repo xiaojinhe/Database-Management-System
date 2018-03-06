@@ -1,13 +1,10 @@
 package db;
 
 import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 public class TestTable {
     @Test
@@ -155,8 +152,7 @@ public class TestTable {
 
         Table t7 = Table.readTable("examples/t7");
         Table t8 = Table.readTable("examples/t8");
-        List<String> columnOft7t8 = new ArrayList<>();
-        columnOft7t8.addAll(Arrays.asList(t7.columnNames));
+        List<String> columnOft7t8 = new ArrayList<>(Arrays.asList(t7.columnNames));
         for (String s8 : t8.columnNames) {
             if (!columnOft7t8.contains(s8)) {
                 columnOft7t8.add(s8);
@@ -167,8 +163,7 @@ public class TestTable {
 
         Table t9 = Table.readTable("examples/t9");
         Table t10 = Table.readTable("examples/t10");
-        List<String> columnOft9t10 = new ArrayList<>();
-        columnOft9t10.addAll(Arrays.asList(t9.columnNames));
+        List<String> columnOft9t10 = new ArrayList<>(Arrays.asList(t9.columnNames));
         for (String s8 : t10.columnNames) {
             if (!columnOft9t10.contains(s8)) {
                 columnOft9t10.add(s8);
@@ -199,7 +194,6 @@ public class TestTable {
         }
         newTable.print();
 
-        List<Table> tables1 = new ArrayList<>();
         tables.add(t2);
         tables.add(t1);
         Table newTable1 = t4;

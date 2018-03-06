@@ -3,7 +3,7 @@ package db;
 import java.util.ArrayList;
 import java.util.List;
 
-import static db.Utils.error;
+import static db.Utils.*;
 
 /** Represents a column arithmetic expression of the form <operand0> <arithmetic operator> <operand1> as <column alias>. */
 class Operation {

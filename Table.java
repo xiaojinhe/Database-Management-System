@@ -307,8 +307,11 @@ class Table implements Iterable<Row> {
         }
         res += "\n";
 
-        for (Row row : rows) {
-            res += row.toString() + "\n";
+        for (int i = 0; i < rowNum(); i++) {
+            res += rows.get(i).toString();
+            if (i != rowNum() - 1) {
+                res += "\n";
+            }
         }
         return res;
     }
@@ -381,38 +384,6 @@ class Table implements Iterable<Row> {
         }
         return res;
     }
-
-    /** List<Operation> operationParse(List<OperationParse> colOperations) {
-        List<Operation> operationList = new ArrayList<>();
-        if (colOperations == null || colOperations.isEmpty()) {
-            return null;
-        }
-        for (OperationParse colOp : colOperations) {
-            Column col1 = this.columns[findColIndex(colOp.col1)];
-            int col2Index = findColIndex(colOp.colOrLiteral);
-            Operation op;
-            String newCol;
-            if (col2Index == -1) {
-                Value val = new Value(CommandParse.stringToValue(colOp.colOrLiteral));
-                if (col1.getColType().equals("float") || val.getValueType().equals("float")) {
-                    newCol = colOp.newCol + " float";
-                } else {
-                    newCol = colOp.newCol + " " + col1.getColType();
-                }
-                op = new Operation(col1, colOp.operator, val, newCol);
-            } else {
-                Column col2 = this.columns[col2Index];
-                if (col1.getColType().equals("float") || col2.getColType().equals("float")) {
-                    newCol = colOp.newCol + " float";
-                } else {
-                    newCol = colOp.newCol + " " + col1.getColType();
-                }
-                op = new Operation(col1, colOp.operator, col2, newCol);
-            }
-            operationList.add(op);
-        }
-        return operationList;
-    } */
 
     List<Condition> condParseToConds(List<ConditionParse> conditions) {
         List<Condition> conditionList = new ArrayList<>();
@@ -500,15 +471,15 @@ class Table implements Iterable<Row> {
     }
 
     /** returns a list of column names except the common ones, from this table and table2. */
-    String[] allColumnNames(Table table2) {
-        List<String> newColumns = new ArrayList<>();
-        Collections.addAll(newColumns, this.columnNames);
+    List<String> allColumnNames(Table table2) {
+        List<String> allColumns = new ArrayList<>();
+        Collections.addAll(allColumns, this.columnNames);
         for (String col2 : table2.columnNames) {
-            if (!newColumns.contains(col2)) {
-                newColumns.add(col2);
+            if (!allColumns.contains(col2)) {
+                allColumns.add(col2);
             }
         }
-        return newColumns.toArray(new String[newColumns.size()]);
+        return allColumns;
     }
 
     /** Returns a list of two lists of columns that are common in this table and table2. The order of the common
@@ -561,7 +532,8 @@ class Table implements Iterable<Row> {
 
     public Table joinTable(Table t2) {
 
-        List<Column> newColumns = this.getAllColumns(this.allColumnNames(t2), this, t2);
+        List<String> newColumnNames = this.allColumnNames(t2);
+        List<Column> newColumns = this.getAllColumns(newColumnNames.toArray(new String[newColumnNames.size()]), this, t2);
         Table res = new Table(newColumns.toArray(new Column[newColumns.size()]));
 
         List<List<Column>> commonCols = this.commonColumns(t2);
