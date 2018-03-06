@@ -9,31 +9,27 @@ import static org.junit.Assert.assertNotEquals;
 public class TestColumn {
     @Test
     public void testToString() {
-        Column a = new Column("a", "int");
-        Column b = new Column("b", "string");
-        Column c = new Column("c", "a");
+        String[] columnNames = new String[]{"a int", "b int", "c int"};
+        Table t = new Table(columnNames);
+        Column a = new Column("a", "int", t);
+        Column b = new Column("b", "string", t);
         assertEquals("a int", a.toString());
         assertEquals("b string", b.toString());
-        assertEquals(null, c.toString());
     }
 
     @Test
     public void testGetColNameAndColType() {
-        Column a = new Column("a",  "int");
-        Column b = new Column("b", "string");
-        Column c = new Column("c", "a");
+        String[] columnNames = new String[]{"a int", "b int", "c float"};
+        Table t = new Table(columnNames);
+        Column a = new Column("a",  "int", t);
+        Column b = new Column("b", "string", t);
+        Column c = new Column("c", "float", t);
         assertEquals("a", a.getColName());
         assertEquals("int", a.getColType());
         assertEquals("b", b.getColName());
         assertEquals("string", b.getColType());
-        assertEquals(null, c.getColName());
-        assertEquals(null, c.getColType());
-    }
-
-    @Test
-    public void testEquals() {
-
-
+        assertEquals("c", c.getColName());
+        assertEquals("float", c.getColType());
     }
 
 }

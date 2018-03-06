@@ -318,32 +318,7 @@ class Table implements Iterable<Row> {
 
     /** Returns a new Table selected from rows of the table after performed given arithmetic operation,
      * with the given colunms.
-
-    Table selectOp(String[] columnNames, Operation op) {
-        Table res = new Table(columnNames);
-
-        for (Row row : this.rows) {
-            Value[] data = new Value[columnNames.length];
-            for (int i = 0; i < columnNames.length; i++) {
-                int index = this.findColIndex(res.columnNames[i]);
-                if (index != -1) {
-                    data[i] = this.columns[index].getColumnValue(row);
-                } else {
-                    data[i] = op.arithmeticOperation(row);
-                }
-            }
-            Row newRow = new Row(data);
-            res.add(newRow);
-        }
-        return res;
-    }
      */
-
-    /** Returns a new Table selected from rows of the table after performed given arithmetic operation,
-     * with the given colunms.
-     */
-
-
     Table selectOp(String[] newColumnNames, List<OperationParse> ops) {
 
         List<Operation> operationList = Operation.operationsTrans(ops, this);

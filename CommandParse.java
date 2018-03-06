@@ -33,14 +33,14 @@ public class CommandParse {
                                  SELECT_AMD = Pattern.compile("select " + REST);
 
     /** Stage 2 syntax, contains clauses of commands. */
-    private static final Pattern CREATE_NEW = Pattern.compile("(\\S+)\\s+\\(\\s*(\\S+\\s+\\S+\\s*" +
-            "(?:,\\s*\\S+\\s+\\S+\\s*)*)\\)"),
-            SELECT_CLS = Pattern.compile("([^,]+?(?:,[^,]+?)*)\\s+from\\s+" +
-                    "(\\S+\\s*(?:,\\s*\\S+\\s*)*)(?:\\s+where\\s+" +
-                    "([\\w\\s+\\-*/'<>=!.]+?(?:\\s+and\\s+" +
-                    "[\\w\\s+\\-*/'<>=!.]+?)*))?"),
-            CREATE_SEL = Pattern.compile("(\\S+)\\s+as select\\s+" + SELECT_CLS.pattern()),
-            INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?\\s*(?:,\\s*.+?\\s*)*)");
+    private static final Pattern CREATE_NEW = Pattern.compile("(\\S+)\\s+\\(\\s*(\\S+\\s+\\S+\\s*"
+                                              + "(?:,\\s*\\S+\\s+\\S+\\s*)*)\\)"),
+                                 SELECT_CLS = Pattern.compile("([^,]+?(?:,[^,]+?)*)\\s+from\\s+" +
+                                              "(\\S+\\s*(?:,\\s*\\S+\\s*)*)(?:\\s+where\\s+" +
+                                              "([\\w\\s+\\-*/'<>=!.]+?(?:\\s+and\\s+" +
+                                              "[\\w\\s+\\-*/'<>=!.]+?)*))?"),
+                                 CREATE_SEL = Pattern.compile("(\\S+)\\s+as select\\s+" + SELECT_CLS.pattern()),
+                                 INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?\\s*(?:,\\s*.+?\\s*)*)");
 
     static String eval(String query) {
         Matcher matcher;
@@ -59,19 +59,19 @@ public class CommandParse {
         } else if ((matcher = SELECT_AMD.matcher(query)).matches()) {
             return select(matcher.group(1));
         } else {
-            throw error ("ERROR: Malformed query: %s", query);
+            throw error("ERROR: Malformed query: %s", query);
         }
     }
 
     static Comparable stringToValue(String str) {
-       Matcher matcher;
-       if ((matcher = INTEGER_TYPE.matcher(str)).matches()) {
-           return Integer.parseInt(matcher.group(1));
-       } else if ((matcher = FLOAT_TYPE.matcher(str)).matches()) {
-           return Float.parseFloat(matcher.group(1));
-       } else {
-           return str;
-       }
+        Matcher matcher;
+        if ((matcher = INTEGER_TYPE.matcher(str)).matches()) {
+            return Integer.parseInt(matcher.group(1));
+        } else if ((matcher = FLOAT_TYPE.matcher(str)).matches()) {
+            return Float.parseFloat(matcher.group(1));
+        } else {
+            return str;
+        }
     }
 
     private static List<ConditionParse> strToCondParse(String[] conditionStrs) {
