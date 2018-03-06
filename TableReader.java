@@ -14,8 +14,8 @@ public class TableReader {
     public TableReader(String fileName) {
         readTable(fileName);
     }
-    void readTable(String name) {
 
+    private void readTable(String name) {
         try (Scanner input = new Scanner(new File(name + ".tbl"))) {
             String colNames = input.nextLine();
             if (colNames == null) {
@@ -23,10 +23,6 @@ public class TableReader {
             }
 
             String[] columnNames = colNames.split(",");
-            //String[] columnTypes = new String[columnNames.length];
-            //for (int i = 0; i < columnNames.length; i++) {
-            //    columnTypes[i] = columnNames[i].split(" ")[1];
-            //}
 
             table = new Table(columnNames);
             while (input.hasNext()) {
@@ -68,8 +64,6 @@ public class TableReader {
             }
         } catch (FileNotFoundException e) {
             throw error("could not find %s.", name);
-        } catch (IOException e) {
-            throw error("problem reading from %s.", name);
         }
     }
 

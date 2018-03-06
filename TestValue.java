@@ -11,7 +11,7 @@ public class TestValue {
         Value a = new Value(10);
         Value b = new Value("NOVALUE");
         Value c = new Value((float) 0.3);
-        Value d = new Value ("'str'");
+        Value d = new Value("'str'");
         assertEquals("10", a.toString());
         assertEquals("NOVALUE", b.toString());
         assertEquals("0.3", c.toString());

@@ -1,7 +1,6 @@
 package db;
 
 import java.util.*;
-
 import static db.Utils.*;
 
 /** Represents a collection of Tables, indexed by name.
@@ -50,7 +49,7 @@ public class Database {
 
     static Table createNewTable(String name, String[] colNamesWithTypes) {
         if (colNamesWithTypes == null || colNamesWithTypes.length == 0) {
-            throw error("Cannot create a table with no columns.");
+            throw error("Cannot create a table without columns provided.");
         }
 
         Table table = new Table(colNamesWithTypes);
@@ -137,7 +136,7 @@ public class Database {
             }
         }
 
-        if (tableAll.rowNum() == 0 ) {
+        if (tableAll.rowNum() == 0) {
             throw error("There is no any matched item in common columns.");
         }
 
@@ -165,5 +164,4 @@ public class Database {
         }
         return res;
     }
-
 }

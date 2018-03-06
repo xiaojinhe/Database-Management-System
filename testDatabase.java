@@ -1,12 +1,9 @@
 package db;
 
 import org.junit.Test;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import static org.junit.Assert.assertEquals;
 
-public class testDatabase {
+public class TestDatabase {
 
     @Test
     public void testDatabaseConstructorAndPublicMethods() {
@@ -32,7 +29,7 @@ public class testDatabase {
         db.transact("insert into records values 'Patriots',2015,12,4,0");
         db.transact("store records");
         System.out.println(db.transact("print records"));
-        assertEquals(12, db.get("records").rowNum());
+        assertEquals(8, db.get("records").rowNum());
     }
 
     @Test
@@ -90,5 +87,18 @@ public class testDatabase {
     }
 
 
+    @Test
+    public void test() {
+        String[] cols = new String[]{"TeamName string", "Stadium string", "Year int"};
+        Table a = new Table(cols);
+        Row r1 = new Row(new Value[]{new Value("'Met'"), new Value("NOVALUE"), new Value(2010)});
+        Row r2 = new Row(new Value[]{new Value("'Met'"), new Value("Citi Field"), new Value("NOVALUE")});
+        a.add(r1);
+        a.add(r2);
+        a.print();
+        Database db = new Database();
+        db.put("a", a);
+        System.out.println(db.transact("select * from a where Year > 0"));
+    }
 }
 

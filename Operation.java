@@ -13,41 +13,13 @@ class Operation {
     String aliasWithType;
     private Table table;
 
-    /** Operation Constructor with a column and a literal.
-    Operation(Column col1, String arithmeticOp, Value literal, String aliasWithType) {
-        if ((col1.getColType().equals("string") && !literal.getValueType().equals("string")) ||
-                (!col1.getColType().equals("string") && literal.getValueType().equals("string"))) {
-            throw error("Cannot perform operations where one operand is a string and the other is int or float types.");
-        }
-
-        this.col1 = col1;
-        this.col2 = null;
-        this.literal = literal;
-        this.arithmeticOp = arithmeticOp;
-        this.aliasWithType = aliasWithType;
-    }  */
-
     /** Operation Constructor with a column and a literal. */
-     Operation(OperationParse opString, Table table) {
-         this.table = table;
-         operationTrans(opString);
-     }
+    Operation(OperationParse opString, Table table) {
+        this.table = table;
+        operationTrans(opString);
+    }
 
-    /** Operation Constructor with two columns.
-    Operation(Column col1, String arithmeticOp, Column col2, String aliasWithType) {
-        if ((col1.getColType().equals("string") && !col2.getColType().equals("string")) ||
-                (!col1.getColType().equals("string") && col2.getColType().equals("string"))) {
-            throw error("Cannot perform operations where one operand is a string and the other is int or float types.");
-        }
-
-        this.col1 = col1;
-        this.col2 = col2;
-        this.literal = null;
-        this.arithmeticOp = arithmeticOp;
-        this.aliasWithType = aliasWithType;
-    } */
-
-    void operationTrans(OperationParse opString) {
+    private void operationTrans(OperationParse opString) {
         if (opString == null) {
             return;
         }

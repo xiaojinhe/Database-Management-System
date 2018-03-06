@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class testConditionParse {
+public class TestConditionParse {
 
     @Test
     public void test() {

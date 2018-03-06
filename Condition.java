@@ -40,28 +40,28 @@ class Condition {
      * from which columns are selected.
      */
     boolean testCondition(Row... rows) {
-       Value val1 = col1.getColumnValue(rows);
-       int comp;
-       if (col2 != null) {
-           comp = val1.compareTo(col2.getColumnValue(rows));
-       } else {
-           comp = val1.compareTo(literal);
-       }
-       switch (this.comparison) {
-           case "<":
-               return comp < 0;
-           case ">":
-               return comp > 0;
-           case "<=":
-               return comp <= 0;
-           case ">=":
-               return comp >= 0;
-           case "==":
-               return comp == 0;
-           case "!=":
-               return comp != 0;
-       }
-       return false;
+        Value val1 = col1.getColumnValue(rows);
+        int comp;
+        if (col2 != null) {
+            comp = val1.compareTo(col2.getColumnValue(rows));
+        } else {
+            comp = val1.compareTo(literal);
+        }
+        switch (this.comparison) {
+            case "<":
+                return comp < 0;
+            case ">":
+                return comp > 0;
+            case "<=":
+                return comp <= 0;
+            case ">=":
+                return comp >= 0;
+            case "==":
+                return comp == 0;
+            case "!=":
+                return comp != 0;
+        }
+        return false;
     }
 
     /** Returns true if and only if rows satisfies all conditions, or false. */

@@ -60,9 +60,9 @@ public class CommandParse {
             } else if ((matcher = SELECT_AMD.matcher(query)).matches()) {
                 return select(matcher.group(1));
             } else {
-                throw error("ERROR: Malformed query: %s", query);
+                throw error("Malformed query: %s", query);
             }
-        } catch (Exception e) {
+        } catch (DBException e) {
             return "" + e;
         }
     }
@@ -109,10 +109,10 @@ public class CommandParse {
     }
 
     private static String createNewTable(String name, String[] columns) {
-       String res;
+        String res;
         try {
             res = Database.createNewTable(name, columns).toString();
-        } catch (Exception e){
+        } catch (DBException e) {
             res = "" + e;
         }
         return res;
@@ -122,7 +122,7 @@ public class CommandParse {
         try {
             Table res = Database.select(name, columnNames, tableNames, conditionParses);
             return "";
-        } catch (Exception e) {
+        } catch (DBException e) {
             return "" + e;
         }
     }
@@ -146,7 +146,7 @@ public class CommandParse {
     private static String printTable(String name) {
         try {
             return Database.printTable(name);
-        } catch (Exception e) {
+        } catch (DBException e) {
             return "" + e;
         }
 
@@ -160,7 +160,7 @@ public class CommandParse {
             } else {
                 throw error("Malformed insert: %s.", expr);
             }
-        } catch (Exception e) {
+        } catch (DBException e) {
             return "" + e;
         }
 
@@ -169,7 +169,7 @@ public class CommandParse {
     private static String dropTable(String name) {
         try {
             return Database.dropTable(name);
-        } catch (Exception e) {
+        } catch (DBException e) {
             return "" + e;
         }
     }
@@ -188,9 +188,9 @@ public class CommandParse {
                 condParse = strToCondParse(matcher.group(3).split(AND));
             }
 
-            Table res = Database.select(null, columns, tableNames,condParse);
+            Table res = Database.select(null, columns, tableNames, condParse);
             return res.toString();
-        } catch (Exception e) {
+        } catch (DBException e) {
             return "" + e;
         }
     }

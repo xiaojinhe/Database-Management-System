@@ -1,9 +1,6 @@
 package db;
-import org.junit.Test;
 
 import static db.Utils.error;
-import static org.junit.Assert.*;
-import java.util.*;
 
 class Value<T extends Comparable<T>> implements Comparable<Value<T>> {
     String valueType;
@@ -34,36 +31,12 @@ class Value<T extends Comparable<T>> implements Comparable<Value<T>> {
 
         } else if (valueType.equals("Integer")) {
             valueType = "int";
-        } else if (valueType.equals("String")){
+        } else if (valueType.equals("String")) {
             valueType = "string";
         } else {
             throw error("Invalid value type entered: %s.", val.getClass().getSimpleName());
         }
     }
-
-    /** A value constructor takes in an int value.
-    Value(int x) {
-        intValue = x;
-        valueType = "int";
-        NaN = false;
-        NOVALUE = false;
-    }*/
-
-    /** A value constructor takes in a float value.
-    Value(float f) {
-        floatValue = f;
-        valueType = "float";
-        NaN = false;
-        NOVALUE = false;
-    }*/
-
-    /** A value constructor takes in a string value.
-    Value(String s) {
-        strValue = s;
-        valueType = "string";
-        NaN = false;
-        NOVALUE = false;
-    }*/
 
     /** Override the toString() to return the string representation of a value. */
     @Override
@@ -94,8 +67,13 @@ class Value<T extends Comparable<T>> implements Comparable<Value<T>> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
 
         Value that = (Value) obj;
         return value.equals(that.value);

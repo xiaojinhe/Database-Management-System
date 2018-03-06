@@ -89,7 +89,7 @@ public class TestTable {
     public void testSelectOneTable() {
         Table records = Table.readTable("records");
         List<ConditionParse> conditions = new ArrayList<>();
-        conditions.add(new ConditionParse(records.columnNames[1] + " > 2000" ));
+        conditions.add(new ConditionParse(records.columnNames[1] + " > 2000"));
         Table res1 = records.select(records.columnNames, conditions);
         res1.print();
         conditions.remove(0);

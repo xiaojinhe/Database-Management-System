@@ -1,8 +1,6 @@
 package db;
 
-import java.util.List;
 import java.util.Arrays;
-
 
 class Row {
     private Value[] data;
@@ -28,11 +26,6 @@ class Row {
         }
     }
 
-    /**
-     * Return a Row formed from the current values of COLUMNS (in order).
-     * COLUMNS must all have been resolved to non-empty TableIterators.
-     */
-
     /** Returns the number of columns in this Row. */
     int size() {
         return data.length;
@@ -41,7 +34,7 @@ class Row {
     void setValue(int i, Value val) {
         try {
             data[i] = val;
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
             System.out.println("The entered index " + i + " is out of boundary.");
         }
     }
@@ -50,7 +43,7 @@ class Row {
     Value getValue(int i) {
         try {
             return data[i];
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
             System.out.println("The entered index " + i + " is out of boundary.");
         }
         return null;
@@ -58,11 +51,11 @@ class Row {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof Row) {
-            if (Arrays.equals(data, ((Row) obj).data)) {
-                return true;
-            }
+            return Arrays.equals(data, ((Row) obj).data);
         }
         return false;
     }
@@ -75,14 +68,14 @@ class Row {
     /** To convert the Row to database format. */
     @Override
     public String toString() {
-        String rowStr = "";
+        StringBuilder rowStr = new StringBuilder();
 
         for (int i = 0; i < data.length; i++) {
-            rowStr += data[i].toString();
+            rowStr.append(data[i].toString());
             if (i != data.length - 1) {
-                rowStr += ",";
+                rowStr.append(",");
             }
         }
-        return rowStr;
+        return rowStr.toString();
     }
 }

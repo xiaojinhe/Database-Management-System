@@ -1,7 +1,6 @@
 package db;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -152,8 +151,8 @@ class Table implements Iterable<Row> {
         }
 
         if (row.size() != this.getColumnNum()) {
-            throw error("The items of the row is %s does not match the number of columns: %s."
-                    , row.size(), this.getColumnNum());
+            throw error("The items of the row is %s does not match the number of columns: %s.",
+                    row.size(), this.getColumnNum());
         }
 
         int rowLength = row.size();
@@ -168,8 +167,6 @@ class Table implements Iterable<Row> {
                     }
                 } else if (columns[i].getColType().equals("string")) {
                     if (row.getValue(i).NOVALUE) {
-                        row.getValue(i).value = 0;
-                    } else {
                         row.getValue(i).value = "";
                     }
                 } else {
@@ -254,8 +251,8 @@ class Table implements Iterable<Row> {
                 }
                 table.add(new Row(row));
             }
-        } catch (Exception e) {
-            throw error("could not find %s.", name);
+        } catch (IOException e) {
+            throw error("Could not find %s.", name);
         }
         return table;
     }
@@ -263,7 +260,7 @@ class Table implements Iterable<Row> {
     /** Store the contents of the table into a file with name. Any I/O errors
      *  cause a DBException. */
     void storeTable(String name) {
-        try (FileWriter output = new FileWriter(new File(name + ".tbl"))){
+        try (FileWriter output = new FileWriter(new File(name + ".tbl"))) {
             for (int i = 0; i < columns.length; i++) {
                 output.write(this.columns[i].toString());
                 if (i != columns.length - 1) {
@@ -384,13 +381,13 @@ class Table implements Iterable<Row> {
     /** Returns a new Table selected from rows of the table that satisfy the given conditions,
      * with the given colunms.
      */
-    Table select(String[] columnNames, List<ConditionParse> conditions) {
-        List<Column> allCols = getAllColumns(columnNames, this);
+    Table select(String[] selectColNames, List<ConditionParse> conditions) {
+        List<Column> allCols = getAllColumns(selectColNames, this);
 
         List<Condition> conditionList = this.condParseToConds(conditions);
         Table res = new Table(allCols);
         for (Row row : this.rows) {
-            if ( conditions == null || conditions.isEmpty() || Condition.test(conditionList, row)) {
+            if (conditions == null || conditions.isEmpty() || Condition.test(conditionList, row)) {
                 Row newRow = new Row(res.columns, row);
                 res.add(newRow);
             }
@@ -420,17 +417,16 @@ class Table implements Iterable<Row> {
         Table combine = this.joinTable(table2);
         Table res = combine.selectOp(newColumnNames, ops);
         return res;
-
     }
 
     /** returns a list of columns with the same column names in String[] columnNames, from this table and table2. */
-    List<Column> getAllColumns(String[] columnNames, Table... tables) {
+    List<Column> getAllColumns(String[] colNames, Table... tables) {
         List<Column> allCols = new ArrayList<>();
-        for (String columnName : columnNames) {
+        for (String colName : colNames) {
             String type = null;
             for (Table table : tables) {
                 for (String col : table.columnNames) {
-                    if (columnName.equals(col)) {
+                    if (colName.equals(col)) {
                         type = table.columnTypes[table.findColIndex(col)];
                         break;
                     }
@@ -439,7 +435,7 @@ class Table implements Iterable<Row> {
                     break;
                 }
             }
-            Column newCol = new Column(columnName, type, tables);
+            Column newCol = new Column(colName, type, tables);
             allCols.add(newCol);
         }
         return allCols;
@@ -482,31 +478,12 @@ class Table implements Iterable<Row> {
     /** Returns a new Table selected from pairs of rows of this table and from table2 that match on all columns with
      * identical names given and satisfy the listed conditions.
      */
-    Table select(Table table2, String[] columnNames, List<ConditionParse> conditions) {
-
-        /**List<Column> allColumns = this.allColumns(table2, columnNames);
-        Table res = new Table(allColumns);
-
-        List<List<Column>> commonCols = this.commonColumns(table2);
-        List<Column> commonCol1 = commonCols.get(0);
-        List<Column> commonCol2 = commonCols.get(1);
-
-        for (Row r1 : this.rows) {
-            for (Row r2 : table2.rows) {
-                if (join(commonCol1, commonCol2, r1, r2)) {
-                    if (conditions == null || conditions.isEmpty() || Condition.test(conditions, r1, r2)) {
-                        Row combinedRow = new Row(res.columns, r1, r2);
-                        res.add(combinedRow);
-                    }
-                }
-            }
-        } */
+    Table select(Table table2, String[] selectColNames, List<ConditionParse> conditions) {
         Table combine = this.joinTable(table2);
-        return combine.select(columnNames, conditions);
+        return combine.select(selectColNames, conditions);
     }
 
     public Table joinTable(Table t2) {
-
         List<String> newColumnNames = this.allColumnNames(t2);
         List<Column> newColumns = this.getAllColumns(newColumnNames.toArray(new String[newColumnNames.size()]), this, t2);
         Table res = new Table(newColumns.toArray(new Column[newColumns.size()]));
@@ -518,8 +495,8 @@ class Table implements Iterable<Row> {
         for (Row r1 : this.rows) {
             for (Row r2 : t2.rows) {
                 if (join(commonCol1, commonCol2, r1, r2)) {
-                        Row combinedRow = new Row(res.columns, r1, r2);
-                        res.add(combinedRow);
+                    Row combinedRow = new Row(res.columns, r1, r2);
+                    res.add(combinedRow);
                 }
             }
         }
@@ -532,6 +509,5 @@ class Table implements Iterable<Row> {
         res.columns = joinCols;
         return res;
     }
-
 }
 

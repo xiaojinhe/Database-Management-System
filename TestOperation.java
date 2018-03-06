@@ -1,18 +1,15 @@
 package db;
 
 import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 public class TestOperation {
 
     @Test
     public void testOperationOneTable() {
         Table records = Table.readTable("examples/records");
+
         List<OperationParse> ops = new ArrayList<>();
         ops.add(new OperationParse("Ties + 5 as TiePlus"));
         String[] columnNames = new String[]{"TeamName", "Season", "Wins", "Losses", "TiePlus"};
@@ -30,6 +27,7 @@ public class TestOperation {
     public void testOperationTwoTables() {
         Table teams = Table.readTable("examples/teams");
         Table records = Table.readTable("examples/records");
+
         List<OperationParse> ops = new ArrayList<>();
         ops.add(new OperationParse(records.columnNames[2] + "/" + records.columnNames[3] + " as Ratio"));
         String[] newColumns = new String[] {"City", "Season", "Ratio"};

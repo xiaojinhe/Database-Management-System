@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 import static db.Utils.*;
 
 class OperationParse {
-
     private static final Pattern OPERATOR_AS = Pattern.compile("\\s*(\\S+)\\s*([/*+-])\\s*(\\S+)\\s+as\\s+(\\S+)\\s*");
 
     String col1;
@@ -21,7 +20,7 @@ class OperationParse {
             colOrLiteral = matcher.group(3);
             newCol = matcher.group(4);
         } else {
-            throw error("ERROR: Given column arithmetic operation, %s, cannot be resolved.", expr);
+            throw error("Given column arithmetic operation, %s, cannot be resolved.", expr);
         }
     }
 
