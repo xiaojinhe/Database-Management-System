@@ -1,7 +1,6 @@
 package db;
 
-/** Indicates some kind of user error.
- *  @author P. N. Hilfinger */
+/** Indicates some kind of user error. */
 class DBException extends RuntimeException {
     /** A new exception without message. */
     DBException() {

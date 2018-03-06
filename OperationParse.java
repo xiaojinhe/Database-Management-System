@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static db.Utils.*;
 
+/** A object that parses a string expression. */
 class OperationParse {
     private static final Pattern OPERATOR_AS = Pattern.compile("\\s*(\\S+)\\s*([/*+-])\\s*(\\S+)\\s+as\\s+(\\S+)\\s*");
 
@@ -28,5 +29,4 @@ class OperationParse {
     public String toString() {
         return String.format("%s %s %s %s", col1, operator, colOrLiteral, newCol);
     }
-
 }

@@ -1,9 +1,7 @@
 package db;
 
 import java.util.List;
-
 import static db.Utils.error;
-
 
 /** A single "where" condition in a "select" command. */
 class Condition {

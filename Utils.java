@@ -1,7 +1,6 @@
 package db;
 
 /** Various utilities used by other sources.
- *  @author P. N. Hilfinger
  */
 class Utils {
 

@@ -3,16 +3,20 @@ package db;
 import static db.Utils.error;
 
 class Value<T extends Comparable<T>> implements Comparable<Value<T>> {
+    /** value type */
     String valueType;
+    /** Track the value is NaN or not */
     boolean NaN;
+    /** Track the value is NOVALUE or not */
     boolean NOVALUE;
+    /** a generic value: String, Integer, and Float */
     T value;
 
     /** Empty value constructor. */
     Value() {
     }
 
-
+    /** Value constructor by passing a generic value (String, Float, and Integer). */
     Value(T val) {
 
         value = val;
@@ -59,6 +63,7 @@ class Value<T extends Comparable<T>> implements Comparable<Value<T>> {
         return this.value;
     }
 
+    /** Returns a copy of the Value */
     Value duplicate() {
         Value res = new Value(this.value);
         res.valueType = this.valueType;

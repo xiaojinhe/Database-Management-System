@@ -8,7 +8,9 @@ import static db.Utils.*;
  * */
 
 public class Database {
+    /** a HashMap to store tables with table names. */
     private static HashMap<String, Table> tables;
+
     /** An empty database. */
     public Database() {
         tables = new HashMap<>();
@@ -35,18 +37,22 @@ public class Database {
         }
     }
 
+    /** transact a string query to CommandParse and return the executed result. */
     public String transact(String query) {
         return CommandParse.eval(query);
     }
 
+    /** Return the size of the number of the tables stored in the database. */
     public int size() {
         return tables.size();
     }
 
+    /** Return a set of table names stored in the database. */
     public Set<String> getTableNames() {
         return tables.keySet();
     }
 
+    /** Create a new table with given table name, column names and types, and put into the database. */
     static Table createNewTable(String name, String[] colNamesWithTypes) {
         if (colNamesWithTypes == null || colNamesWithTypes.length == 0) {
             throw error("Cannot create a table without columns provided.");
@@ -57,12 +63,14 @@ public class Database {
         return table;
     }
 
+    /** Lord a table into the database, given by the table name. */
     static String loadTable(String name) {
         Table t = Table.readTable(name);
         tables.put(name, t);
         return "";
     }
 
+    /** Save the table with the given name as a file name.tbl., if the table is in the database. */
     static String storeTable(String name) {
         if (tables.containsKey(name)) {
             Table table = tables.get(name);
@@ -73,6 +81,7 @@ public class Database {
         }
     }
 
+    /** Delete a table from the database by given name if the table is in the database, otherwise return error msg. */
     static String dropTable(String name) {
         if (tables.containsKey(name)) {
             tables.remove(name);
@@ -82,6 +91,7 @@ public class Database {
         }
     }
 
+    /** Parse a rowLine string into a Row object. */
     private static Row rowLineToRow(String rowLine) {
         String[] rowItemStr = rowLine.split(",");
         Value[] rowData = new Value[rowItemStr.length];
@@ -91,6 +101,7 @@ public class Database {
         return new Row(rowData);
     }
 
+    /** Insert a Row into the table by given table name and rowLine string, if the table is in the database. */
     static String insertRow(String name, String rowLine) {
         if (tables.containsKey(name)) {
             Row row = rowLineToRow(rowLine);
@@ -105,6 +116,7 @@ public class Database {
         }
     }
 
+    /** Print the table by giving table name if the table is in the database, otherwise return a error msg. */
     static String printTable(String name) {
         if (tables.containsKey(name)) {
             return tables.get(name).toString();
@@ -113,7 +125,9 @@ public class Database {
         }
     }
 
-
+    /** Parse and execute a select command by taking in new table name, column expressions, table names,
+     * and a list of ConditionParse objects.
+     */
     static Table select(String name, String[] columns, String[] tableNames, List<ConditionParse> condParse) {
         List<Table> tableList = new ArrayList<>();
         for (String t : tableNames) {

@@ -19,6 +19,7 @@ class Operation {
         operationTrans(opString);
     }
 
+    /** Parse a OperationParse into a Operation object. */
     private void operationTrans(OperationParse opString) {
         if (opString == null) {
             return;
@@ -53,6 +54,8 @@ class Operation {
         }
     }
 
+    /** Return a list of Operation objects by passing a list of OperationParse objects and
+     * the table that the operations will be applied to. */
     static List<Operation> operationsTrans(List<OperationParse> colOperations, Table table) {
         List<Operation> operationList = new ArrayList<>();
         if (colOperations == null || colOperations.isEmpty()) {

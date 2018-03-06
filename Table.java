@@ -17,10 +17,9 @@ class Table implements Iterable<Row> {
     /** Column array. */
     Column[] columns;
     /** Row lists. */
-    List<Row> rows;
-    String[] columnTypes;
-    //String[] columnNamesWithTypes;
-
+    private List<Row> rows;
+    /** Column types. */
+    private String[] columnTypes;
     private int iteratorRow;
 
     /** A new Table whose columns are provided by Column[] columns,
@@ -113,6 +112,7 @@ class Table implements Iterable<Row> {
         return this.rows != null;
     }
 
+    /** Returns the row by giving an index. */
     public Row getIthRow(int i) {
         Row ith = null;
         if (i < rows.size() && i >= 0) {
@@ -121,6 +121,7 @@ class Table implements Iterable<Row> {
         return ith;
     }
 
+    /** Returns next row in the table. */
     public Row getNextRow(Column[] cols) {
         Row returnRow = null;
         if (iteratorRow < rowNum()) {

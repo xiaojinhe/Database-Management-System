@@ -6,19 +6,19 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import static db.Utils.*;
 
-/** An Object that takes inputs from a given scanner and interprets the demands. */
+/** An Object that takes inputs and interprets the demands. */
 
 public class CommandParse {
 
     /** Text of regular expressions. */
     private static final String REST = "\\s*(.*)\\s*",
                                 COMMA = "\\s*,\\s*",
-                                AND = "\\s+and\\s+";
-
-    private static final String INTEGER = "\\s*([+-]?\\d+)\\s*",
+                                AND = "\\s+and\\s+",
+                                INTEGER = "\\s*([+-]?\\d+)\\s*",
                                 STRING = "\'.*\'",
                                 FLOAT = "^\\s*([+-]?\\.\\d*)\\s*$";
 
+    /** Syntax for value types. */
     private static final Pattern INTEGER_TYPE = Pattern.compile(INTEGER),
                                  STRING_TYPE = Pattern.compile(STRING),
                                  FLOAT_TYPE = Pattern.compile(FLOAT);
@@ -42,6 +42,7 @@ public class CommandParse {
                                  CREATE_SEL = Pattern.compile("(\\S+)\\s+as select\\s+" + SELECT_CLS.pattern()),
                                  INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?\\s*(?:,\\s*.+?\\s*)*)");
 
+    /** Parse and execute one request statement from the input stream, and return appropriate result. */
     static String eval(String query) {
         try {
             Matcher matcher;
@@ -67,6 +68,7 @@ public class CommandParse {
         }
     }
 
+    /** Returns a value from the input string. */
     static Comparable stringToValue(String str) {
         Matcher matcher;
         if ((matcher = INTEGER_TYPE.matcher(str)).matches()) {
@@ -78,6 +80,7 @@ public class CommandParse {
         }
     }
 
+    /** Returns a list of ConditionParse objects from a string array. */
     private static List<ConditionParse> strToCondParse(String[] conditionStrs) {
         List<ConditionParse> condParse = new ArrayList<>();
         for (String str : conditionStrs) {
@@ -86,6 +89,7 @@ public class CommandParse {
         return condParse;
     }
 
+    /** Create a new table according to the request. */
     private static String createTable(String expr) {
         try {
             Matcher matcher;
@@ -108,6 +112,7 @@ public class CommandParse {
         }
     }
 
+    /** Create a new table with given table name and column names and types. */
     private static String createNewTable(String name, String[] columns) {
         String res;
         try {
@@ -118,7 +123,11 @@ public class CommandParse {
         return res;
     }
 
-    private static String createSelectedTable(String name, String[] columnNames, String[] tableNames, List<ConditionParse> conditionParses) {
+    /** Create a new table from existed tables via select function, by giving column names, table names,
+     * new table name, and a list of ConditionParse objects.
+     */
+    private static String createSelectedTable(String name, String[] columnNames, String[] tableNames,
+                                              List<ConditionParse> conditionParses) {
         try {
             Table res = Database.select(name, columnNames, tableNames, conditionParses);
             return "";
@@ -127,6 +136,7 @@ public class CommandParse {
         }
     }
 
+    /** Load a table, given by name, and add the table to the database. */
     private static String loadTable(String name) {
         try {
             return Database.loadTable(name);
@@ -135,6 +145,7 @@ public class CommandParse {
         }
     }
 
+    /** Save the table with the given name as a file name.tbl. */
     private static String storeTable(String name) {
         try {
             return Database.storeTable(name);
@@ -143,6 +154,7 @@ public class CommandParse {
         }
     }
 
+    /** Print the table with the given name. */
     private static String printTable(String name) {
         try {
             return Database.printTable(name);
@@ -152,6 +164,7 @@ public class CommandParse {
 
     }
 
+    /** Insert a new row by parsing the given expression. */
     private static String insertRow(String expr) {
         try {
             Matcher matcher = INSERT_CLS.matcher(expr);
@@ -166,6 +179,7 @@ public class CommandParse {
 
     }
 
+    /** Delete the table from the database, given by the table name. */
     private static String dropTable(String name) {
         try {
             return Database.dropTable(name);
@@ -174,6 +188,7 @@ public class CommandParse {
         }
     }
 
+    /** Parse and execute a select expression and return the result. */
     private static String select(String expr) {
         try {
             Matcher matcher = SELECT_CLS.matcher(expr);
@@ -190,7 +205,7 @@ public class CommandParse {
 
             Table res = Database.select(null, columns, tableNames, condParse);
             return res.toString();
-        } catch (DBException e) {
+        } catch (Exception e) {
             return "" + e;
         }
     }

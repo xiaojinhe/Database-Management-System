@@ -2,7 +2,9 @@ package db;
 
 import java.util.Arrays;
 
+/** A object that represents a row in a table. */
 class Row {
+    /** a Value array that stores the row data. */
     private Value[] data;
 
     /** A Row whose column values are DATA. The array DATA must not be altered
@@ -31,6 +33,7 @@ class Row {
         return data.length;
     }
 
+    /** set a value in the row by giving an index. */
     void setValue(int i, Value val) {
         try {
             data[i] = val;

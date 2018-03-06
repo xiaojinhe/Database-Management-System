@@ -40,24 +40,27 @@ class Column {
      * @param rows
      * @return Value
      */
-    public Value getColumnValue(Row... rows) {
+    Value getColumnValue(Row... rows) {
         return rows[tableNum].getValue(columnIndex);
     }
 
-
-    public String getColName() {
+    /** Returns this column name. */
+    String getColName() {
         return colName;
     }
 
-    public String getColType() {
+    /** Returns this column type. */
+    String getColType() {
         return colType;
     }
 
+    /** Override toString method to return the column with column with name and type. */
     @Override
     public String toString() {
         return this.colName + " " + this.colType;
     }
 
+    /** Returns true if the obj is instance of Column and has the same column name and type, otherwise false. */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

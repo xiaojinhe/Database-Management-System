@@ -8,17 +8,12 @@ class ConditionParse {
 
     /** Stage 3 syntax, parses information about conditions and operations. */
     private static final Pattern CONDITION_CMD = Pattern.compile("\\s*(\\S+)\\s*(<=|>=|==|!=|<|>)\\s*(\\S+)\\s*");
-           // smallerAndEqual_CMD = Pattern.compile("([^\\s]+)\\s*<=\\s*([^\\s]+)"),
-           // equal_CMD = Pattern.compile("([^\\s]+)\\s*==\\s*([^\\s]+)"),
-           // notEqual_CMD = Pattern.compile("([^\\s]+)\\s*!=\\s*([^\\s]+)"),
-           // larger_CMD = Pattern.compile("([^\\s]+)\\s*>\\s*([^\\s]+)"),
-           // smaller_CMD = Pattern.compile("([^\\s]+)\\s*<\\s*([^\\s]+)"),
-           // OPERATOR_AS = Pattern.compile("([^/\\s]+)([/*+-])([^/\\s]+)\\s+as\\s+(\\S+)");
 
     String col1;
     String comparison;
     String colOrLiteral;
 
+    /** Parse the given string expression into three String objects, col1, comparison, and colOrLiteral. */
     ConditionParse(String expr) {
         Matcher matcher;
         if ((matcher = CONDITION_CMD.matcher(expr)).matches()) {
