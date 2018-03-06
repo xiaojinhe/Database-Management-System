@@ -43,23 +43,27 @@ public class CommandParse {
                                  INSERT_CLS  = Pattern.compile("(\\S+)\\s+values\\s+(.+?\\s*(?:,\\s*.+?\\s*)*)");
 
     static String eval(String query) {
-        Matcher matcher;
-        if ((matcher = CREATE_CMD.matcher(query)).matches()) {
-            return createTable(matcher.group(1));
-        } else if ((matcher = LOAD_CMD.matcher(query)).matches()) {
-            return loadTable(matcher.group(1));
-        } else if ((matcher = STORE_AMD.matcher(query)).matches()) {
-            return storeTable(matcher.group(1));
-        } else if ((matcher = DROP_CMD.matcher(query)).matches()) {
-            return dropTable(matcher.group(1));
-        } else if ((matcher = INSERT_CMD.matcher(query)).matches()) {
-            return insertRow(matcher.group(1));
-        } else if ((matcher = PRINT_CMD.matcher(query)).matches()) {
-            return printTable(matcher.group(1));
-        } else if ((matcher = SELECT_AMD.matcher(query)).matches()) {
-            return select(matcher.group(1));
-        } else {
-            throw error("ERROR: Malformed query: %s", query);
+        try {
+            Matcher matcher;
+            if ((matcher = CREATE_CMD.matcher(query)).matches()) {
+                return createTable(matcher.group(1));
+            } else if ((matcher = LOAD_CMD.matcher(query)).matches()) {
+                return loadTable(matcher.group(1));
+            } else if ((matcher = STORE_AMD.matcher(query)).matches()) {
+                return storeTable(matcher.group(1));
+            } else if ((matcher = DROP_CMD.matcher(query)).matches()) {
+                return dropTable(matcher.group(1));
+            } else if ((matcher = INSERT_CMD.matcher(query)).matches()) {
+                return insertRow(matcher.group(1));
+            } else if ((matcher = PRINT_CMD.matcher(query)).matches()) {
+                return printTable(matcher.group(1));
+            } else if ((matcher = SELECT_AMD.matcher(query)).matches()) {
+                return select(matcher.group(1));
+            } else {
+                throw error("ERROR: Malformed query: %s", query);
+            }
+        } catch (Exception e) {
+            return "" + e;
         }
     }
 
@@ -82,23 +86,25 @@ public class CommandParse {
         return condParse;
     }
 
-
-
     private static String createTable(String expr) {
-        Matcher matcher;
-        if ((matcher = CREATE_NEW.matcher(expr)).matches()) {
-            return createNewTable(matcher.group(1), matcher.group(2).split(COMMA));
-        } else if ((matcher = CREATE_SEL.matcher(expr)).matches()) {
-            String name = matcher.group(1);
-            String[] columnNames = matcher.group(2).split(COMMA);
-            String[] tableNames = matcher.group(3).split(COMMA);
-            List<ConditionParse> condParse = null;
-            if (matcher.group(4) != null) {
-                condParse = strToCondParse(matcher.group(4).split(AND));
+        try {
+            Matcher matcher;
+            if ((matcher = CREATE_NEW.matcher(expr)).matches()) {
+                return createNewTable(matcher.group(1), matcher.group(2).split(COMMA));
+            } else if ((matcher = CREATE_SEL.matcher(expr)).matches()) {
+                String name = matcher.group(1);
+                String[] columnNames = matcher.group(2).split(COMMA);
+                String[] tableNames = matcher.group(3).split(COMMA);
+                List<ConditionParse> condParse = null;
+                if (matcher.group(4) != null) {
+                    condParse = strToCondParse(matcher.group(4).split(AND));
+                }
+                return createSelectedTable(name, columnNames, tableNames, condParse);
+            } else {
+                throw error("Malformed create: %s", expr);
             }
-            return createSelectedTable(name, columnNames, tableNames, condParse);
-        } else {
-            throw error("Malformed create: %s", expr);
+        } catch (Exception e) {
+            return "" + e;
         }
     }
 
@@ -122,44 +128,66 @@ public class CommandParse {
     }
 
     private static String loadTable(String name) {
-        return Database.loadTable(name);
+        try {
+            return Database.loadTable(name);
+        } catch (Exception e) {
+            return "" + e;
+        }
     }
 
     private static String storeTable(String name) {
-        return Database.storeTable(name);
+        try {
+            return Database.storeTable(name);
+        } catch (Exception e) {
+            return "" + e;
+        }
     }
 
     private static String printTable(String name) {
-        return Database.printTable(name);
+        try {
+            return Database.printTable(name);
+        } catch (Exception e) {
+            return "" + e;
+        }
+
     }
 
     private static String insertRow(String expr) {
-        Matcher matcher = INSERT_CLS.matcher(expr);
-        if (matcher.matches()) {
-            return Database.insertRow(matcher.group(1), matcher.group(2));
-        } else {
-            throw error("Malformed insert: %s.", expr);
+        try {
+            Matcher matcher = INSERT_CLS.matcher(expr);
+            if (matcher.matches()) {
+                return Database.insertRow(matcher.group(1), matcher.group(2));
+            } else {
+                throw error("Malformed insert: %s.", expr);
+            }
+        } catch (Exception e) {
+            return "" + e;
         }
+
     }
 
     private static String dropTable(String name) {
-        return Database.dropTable(name);
+        try {
+            return Database.dropTable(name);
+        } catch (Exception e) {
+            return "" + e;
+        }
     }
 
     private static String select(String expr) {
-        Matcher matcher = SELECT_CLS.matcher(expr);
-        if (!matcher.matches()) {
-            throw error("Malformed select: %s", expr);
-        }
-
-        String[] columns = matcher.group(1).split(COMMA);
-        String[] tableNames = matcher.group(2).split(COMMA);
-        List<ConditionParse> condParse = null;
-        if (matcher.group(3) != null) {
-            condParse = strToCondParse(matcher.group(3).split(AND));
-        }
-
         try {
+            Matcher matcher = SELECT_CLS.matcher(expr);
+            if (!matcher.matches()) {
+                throw error("Malformed select: %s", expr);
+            }
+
+            String[] columns = matcher.group(1).split(COMMA);
+            String[] tableNames = matcher.group(2).split(COMMA);
+            List<ConditionParse> condParse = null;
+            if (matcher.group(3) != null) {
+                condParse = strToCondParse(matcher.group(3).split(AND));
+            }
+
             Table res = Database.select(null, columns, tableNames,condParse);
             return res.toString();
         } catch (Exception e) {

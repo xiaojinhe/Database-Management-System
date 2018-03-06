@@ -32,7 +32,7 @@ public class testDatabase {
         db.transact("insert into records values 'Patriots',2015,12,4,0");
         db.transact("store records");
         System.out.println(db.transact("print records"));
-        assertEquals(8, db.get("records").rowNum());
+        assertEquals(12, db.get("records").rowNum());
     }
 
     @Test
@@ -78,7 +78,15 @@ public class testDatabase {
 
     @Test
     public void testSelect() {
-
+        Database db = new Database();
+        db.transact("load fans");
+        db.transact("load teams");
+        db.transact("load records");
+        System.out.println(db.transact("select Firstname,Lastname,TeamName from fans where Lastname >= 'Lee'"));
+        System.out.println(db.transact("select Mascot,YearEstablished from teams where YearEstablished > 1942"));
+        db.transact("create table seasonRatios as select City,Season,Wins/Losses as Ratio from teams,records");
+        System.out.println(db.transact("print seasonRatios"));
+        System.out.println(db.transact("select City,Season,Ratio from seasonRatios where Ratio < 1"));
     }
 
 

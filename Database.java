@@ -70,7 +70,7 @@ public class Database {
             table.storeTable(name);
             return "";
         } else {
-            throw error("ERROR: No such table %s.", name);
+            throw error("No such table %s.", name);
         }
     }
 
@@ -79,7 +79,7 @@ public class Database {
             tables.remove(name);
             return "";
         } else {
-            throw error("ERROR: Table %s is not found.", name);
+            throw error("Table %s is not found.", name);
         }
     }
 
@@ -102,7 +102,7 @@ public class Database {
                 return "The row is already in the table.";
             }
         } else {
-            throw error("ERROR: Table %s is not found.", name);
+            throw error("Table %s is not found.", name);
         }
     }
 
@@ -110,7 +110,7 @@ public class Database {
         if (tables.containsKey(name)) {
             return tables.get(name).toString();
         } else {
-            throw error("ERROR: Table %s is not found.", name);
+            throw error("Table %s is not found.", name);
         }
     }
 
@@ -121,12 +121,12 @@ public class Database {
             if (tables.containsKey(t)) {
                 tableList.add(tables.get(t));
             } else {
-                throw error("ERROR: Table %s does not exist in database", t);
+                throw error("Table %s does not exist in database", t);
             }
         }
 
         if (tableList.size() == 0) {
-            throw error("ERROR: No valid table selected.");
+            throw error("No valid table selected.");
         }
 
         Table tableAll = tableList.remove(0); //get the first table in the tableLis

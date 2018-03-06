@@ -254,7 +254,7 @@ class Table implements Iterable<Row> {
                 }
                 table.add(new Row(row));
             }
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             throw error("could not find %s.", name);
         }
         return table;
