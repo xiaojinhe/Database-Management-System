@@ -4,11 +4,7 @@ import static db.Utils.*;
 
 
 /** A Column is effectively an index of a specific, named column
- *  in a list of Rows.  Given a sequence of [t0,...,tn] of Tables,
- *  and a column name, c, a Column can retrieve the value of that column of
- *  the first ti that contains it from an array of rows [r0,...,rn],
- *  where each ri comes from ti.
- *  @author P. N. Hilfinger
+ *  in a list of Rows.
  */
 class Column {
 

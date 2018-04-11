@@ -4,7 +4,6 @@ import java.util.*;
 import static db.Utils.*;
 
 /** Represents a collection of Tables, indexed by name.
- * @author Xiaojin He
  * */
 
 public class Database {
